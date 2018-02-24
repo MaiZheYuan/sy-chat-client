@@ -6,28 +6,30 @@
                 <span v-text="item.tit" @click="toolSelect(item)"></span>
             </li>
         </ul>
-        <form class="tool-part-form" :key="'search'">
-            <div>
-                <transition name="shrink">
-                    <input type="text" class="tool-part-input" placeholder="房间名"
-                           v-show="curToolListItem" v-model.trim="roomName">
-                </transition>
-            </div>
-            <div>
-                <transition name="shrink">
-                    <input type="text" class="tool-part-input"
-                           placeholder="房间口令" v-show="isShowCalc('create')"
-                           v-model.trim="roomPassword">
-                </transition>
-            </div>
-            <div class="tool-part-form-confirm">
-                <a class="tool-part-confirm-btn" v-show="curToolListItem"
-                   @click="toolFormConfirm">确定</a>
-            </div>
-        </form>
-        <ul class="tool-part-result">
-            <li class="tool-part-result-item" v-for="item in searchResultList" v-text="item.roomName"></li>
-        </ul>
+        <div class="tool-part-form-box">
+            <form class="tool-part-form" :key="'search'">
+                <div>
+                    <transition name="shrink">
+                        <input type="text" class="tool-part-input" placeholder="房间名"
+                               v-show="curToolListItem" v-model.trim="roomName">
+                    </transition>
+                </div>
+                <div>
+                    <transition name="shrink">
+                        <input type="text" class="tool-part-input"
+                               placeholder="房间口令" v-show="isShowCalc('create')"
+                               v-model.trim="roomPassword">
+                    </transition>
+                </div>
+                <div class="tool-part-form-confirm">
+                    <a class="tool-part-confirm-btn" v-show="curToolListItem"
+                       @click="toolFormConfirm">确定</a>
+                </div>
+            </form>
+            <ul class="tool-part-result">
+                <li class="tool-part-result-item" v-for="item in searchResultList" v-text="item.roomName"></li>
+            </ul>
+        </div>
     </div>
 </template>
 <script>
@@ -56,6 +58,7 @@
                 this.curToolListItem = null;
                 this.roomName = null;
                 this.roomPassword = null;
+                this.searchResultList = [];
             },
             isShowCalc(type) {
                 return this.curToolListItem && this.curToolListItem.action === type;
@@ -139,6 +142,7 @@
         border-top: 3px solid #000;
         border-radius: 3px 3px 0 0;
         background: #eee;
+        position: relative;
     }
 
     .tool-part .active {
@@ -178,6 +182,11 @@
     .shrink-enter, .shrink-leave-to {
         width: 0;
     }
+    .tool-part-form-box{
+        position: absolute;
+        width: 100%;
+        background: #eee;
+    }
     .tool-part-form-confirm{
         text-align: center;
     }
@@ -205,7 +214,6 @@
         text-align: center;
         background: #000;
         border: 1px solid #000;
-        position: relative;
         font-size: 0;
         vertical-align: top;
         border-radius: 0 0 5px 5px;
