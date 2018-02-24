@@ -1,6 +1,6 @@
 <template>
     <ul>
-        <li v-for="item in listData.reverse()">
+        <li v-for="item in roomList">
             <span v-text="item"></span>
         </li>
     </ul>
@@ -10,6 +10,11 @@
         data() {
             return {
                 listData:[]
+            }
+        },
+        computed:{
+            roomList(){
+                return this.listData.reverse();
             }
         },
         methods:{
@@ -28,7 +33,7 @@
             errHandle(){},
         },
         mounted(){
-//            this.getUserRoomList();
+            this.getUserRoomList();
 //            this._$eventBus.$on("roomListRefresh",this.getUserRoomList);
         }
     }
