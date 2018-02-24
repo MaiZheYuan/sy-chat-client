@@ -34,7 +34,7 @@
         },
         mounted(){
             this.getUserRoomList();
-//            this._$eventBus.$on("roomListRefresh",this.getUserRoomList);
+            this._$eventBus.$on("roomListRefresh",this.getUserRoomList);
         }
     }
 </script>

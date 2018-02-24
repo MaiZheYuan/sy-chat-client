@@ -97,7 +97,7 @@
                 })
             },
             roomCreateSucceed(){
-//                this._$eventBus.$emit("roomListRefresh");
+                this._$eventBus.$emit("roomListRefresh");
 //                alert("新建成功！")
             },
             roomCreateFailed(code){

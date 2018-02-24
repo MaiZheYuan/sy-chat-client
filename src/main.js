@@ -4,11 +4,11 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import VueResource from 'vue-resource'
-// import eventBus from './eventBus'
+import eventBus from './eventBus'
 
 Vue.config.productionTip = false;
 Vue.use(VueResource);
-// Vue.use(eventBus);
+Vue.use(eventBus);
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
