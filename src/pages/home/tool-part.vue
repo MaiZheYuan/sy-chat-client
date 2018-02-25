@@ -3,7 +3,7 @@
         <ul class="tool-part-list">
             <li class="tool-part-list-item" v-for="item in toolList"
                 :class="{active:item.isActive}">
-                <span v-text="item.tit" @click="toolSelect(item)"></span>
+                <span v-text="item.tit" @click="toolSelect(item,$event)"></span>
             </li>
         </ul>
         <div class="tool-part-form-box">
@@ -27,13 +27,24 @@
                 </div>
             </form>
             <ul class="tool-part-result">
-                <li class="tool-part-result-item" v-for="item in searchResultList" v-text="item.roomName"></li>
+                <li class="tool-part-result-form" v-if="isShowResultForm">
+                    <input class="tool-part-result-input" v-model.trim="roomPassword"
+                           type="text" placeholder="请输入房间口令">
+                    <span class="tool-part-result-btn" @click="roomJoinComfirm">确定</span>
+                </li>
+                <li class="tool-part-result-item" v-for="item in searchResultList"
+                    :class="{'result-active':item.isActive}"
+                    v-text="item.roomName" @click="joinRoomClickHandle(item)"></li>
             </ul>
         </div>
     </div>
 </template>
 <script>
+    import inputPart from "@components/promptPart.vue";
     export default {
+        components:{
+            inputPart
+        },
         data() {
             return {
                 roomName: "",
@@ -44,6 +55,9 @@
                 ],
                 curToolListItem: null,
                 searchResultList: [],
+                curResultItem:null,
+                isShowResultForm:false,
+                userInfo:null,
             }
         },
         methods: {
@@ -58,7 +72,10 @@
                 this.curToolListItem = null;
                 this.roomName = null;
                 this.roomPassword = null;
-                this.searchResultList = [];
+//                this.searchResultList = [];
+                this.isShowResultForm = false;
+                this.curResultItem && ( this.curResultItem.isActive=false );
+                this.curResultItem = null;
             },
             isShowCalc(type) {
                 return this.curToolListItem && this.curToolListItem.action === type;
@@ -75,13 +92,12 @@
             },
             roomCreate() {
                 if(!this.roomPassword || !this.roomName){ return false; };
-                let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-                if(!userInfo) { this.$router.push({name:"user"}) };
+//                if(!this.userInfo) { this.$router.push({name:"user"}) };
                 let path=window.SYRESOURCE.rooms;
                 let params = {
                     roomPassword:this.roomPassword,
                     roomName:this.roomName,
-                    userId:userInfo.userId
+                    userId:this.userInfo.userId
                 };
                 this.$http.post(path,{params:params}).then(res=>{
                     this.roomCreateHandle(res).then(
@@ -93,7 +109,6 @@
             roomCreateHandle(res){
                 return new Promise((rs,rj)=>{
                     let code;
-                    debugger;
                     200 === (code = res.body.code)
                         ?rs()
                         :rj(code)
@@ -131,6 +146,32 @@
             roomSearchFailed(code){
                 alert("搜索失败！")
             },
+            joinRoomClickHandle(item){
+                this.curResultItem && ( this.curResultItem.isActive = false );
+                this.curResultItem = item;
+                item.isActive = true;
+                this.isShowResultForm = true;
+            },
+            roomJoinComfirm(){
+                if(!this.roomPassword){ return false; };
+//                if(!this.userInfo) { this.$router.push({name:"user"}) };
+                let path=window.SYRESOURCE.roomMembers;
+                let params = {
+                    roomPassword:this.roomPassword,
+                    roomName:this.curResultItem.roomName,
+                    userId:this.userInfo.userId
+                };
+                this.$http.post(path,{params:params}).then(res=>{
+                    this.roomCreateHandle(res).then(
+                        res.body.code === 200
+                            ? this._$eventBus.$emit("roomListRefresh")
+                            : alert(`加入房间失败！`)
+                    )
+                },err=>{})
+            }
+        },
+        mounted(){
+            this.userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
         }
     }
 </script>
@@ -219,16 +260,41 @@
         font-size: 0;
         vertical-align: top;
         border-radius: 0 0 5px 5px;
-        min-height: 2px;
+        min-height: 4px;
     }
     .tool-part-result-item{
         font-size: 16px;
         cursor: pointer;
         /*text-decoration: underline;*/
-        padding-top: 10px;
+        padding-bottom: 10px;
+        position: relative;
     }
-    .tool-part-result-item:hover{
+    .tool-part-result-item:hover,.result-active{
         font-weight: bold;
         text-shadow: 1px 1px 1px rgba(255, 255, 255, 1);
+    }
+    .tool-part-result-form>*{
+        background: transparent;
+        border:none;
+        margin: 15px 0;
+    }
+    .tool-part-result-input{
+        border-bottom: 1px solid #fff;
+        color: #fff;
+    }
+    .tool-part-result-input::placeholder{
+        color: #aaa;
+    }
+    .tool-part-result-btn{
+        display: inline-block;
+        padding: 0 10px;
+        border: 1px solid #fff;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 4px 4px 4px 0;
+    }
+    .tool-part-result-btn:hover{
+        background: #fff;
+        color: #000;
     }
 </style>

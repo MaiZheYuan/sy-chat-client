@@ -1,6 +1,6 @@
 <template>
     <ul class="room-list">
-        <li class="room-list-item" v-for="item in roomList">
+        <li class="room-list-item" v-for="item in listData">
             <span class="room-list-item-content" v-text="item" :title="item"></span>
         </li>
     </ul>
@@ -12,16 +12,11 @@
                 listData:[]
             }
         },
-        computed:{
-            roomList(){
-                return this.listData.reverse();
-            }
-        },
         methods:{
-            getUserRoomList(){
-                let params = JSON.parse(sessionStorage.getItem("userInfo"));
-                if( !params ) {return this.$router.push({name:"user"});};
-                let path = window.SYRESOURCE.userRooms;
+            getRoomUserList(roomName){
+                let params = {roomName:roomName};
+//                if( !params ) {return this.$router.push({name:"user"});};
+                let path = window.SYRESOURCE.roomMembers;
                 this.$http
                     .get(path,{params:params})
                     .then(res=>{
@@ -33,8 +28,8 @@
             errHandle(){},
         },
         mounted(){
-            this.getUserRoomList();
-            this._$eventBus.$on("roomListRefresh",this.getUserRoomList);
+            this.getRoomUserList();
+            this._$eventBus.$on("userListRefresh",this.getRoomUserList);
         }
     }
 </script>

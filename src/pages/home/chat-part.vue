@@ -4,8 +4,8 @@
         <div class="content">
             <p class="chat-line"
                v-for="item in mesModel">
-                <span class="chat-man"
-                      :class="{'chat-man-me':item.userId==userId}"
+                <span class="chat-moment chat-member"
+                      :class="{'chat-moment-me':item.userId==userId}"
                       v-text="item.userName"></span>
                 <span class="chat-moment"
                       :class="{'chat-moment-me':item.userId==userId}"
@@ -40,6 +40,19 @@
                     {
                         type: "txt",
                         message: "我",
+                        userId: "ksldfjk",
+                        userName: "搜索",
+                        moment:"2017/01/02"
+                    },
+                    {
+                        type: "txt",
+                        message: "的发送的方式的方式的发是多少的发斯蒂芬斯蒂芬",
+                        userId: "ksldfjk",
+                        userName: "搜索",
+                        moment:"2017/01/02"
+                    },{
+                        type: "txt",
+                        message: "水电费人认为日本454546454645454",
                         userId: "ksldfjk",
                         userName: "搜索",
                         moment:"2017/01/02"
@@ -124,7 +137,6 @@
         margin-top: 10px;
         overflow: hidden;
     }
-
     .chat-man {
         float: left;
         display: inline-flex;
@@ -140,12 +152,14 @@
         background: #000;
         color: #fff;
     }
-
     .chat-moment {
         font-size: 10px;
         display: block;
     }
-
+    .chat-member{
+        font-size: 16px;
+        font-weight: bold;
+    }
     .chat-mess {
         box-sizing: border-box;
         display: inline-block;
