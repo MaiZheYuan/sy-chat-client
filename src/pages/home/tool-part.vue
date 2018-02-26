@@ -72,7 +72,7 @@
                 this.curToolListItem = null;
                 this.roomName = null;
                 this.roomPassword = null;
-//                this.searchResultList = [];
+                this.searchResultList = [];
                 this.isShowResultForm = false;
                 this.curResultItem && ( this.curResultItem.isActive=false );
                 this.curResultItem = null;
