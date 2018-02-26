@@ -64,7 +64,7 @@
                     let code;
                     200 === (code = res.body.code)
                         ?rs(res)
-                        :rj(code)
+                        :rj(res)
                 })
             },
             signUpSucceed(){
@@ -72,7 +72,9 @@
                 this.params = null;
                 this.$router.push({name:"home"})
             },
-            signUpFailed(code){}
+            signUpFailed(res){
+                alert(res.body.data)
+            }
         },
         mounted() {
             this.$on("userConfirm", this.formNoValidate)

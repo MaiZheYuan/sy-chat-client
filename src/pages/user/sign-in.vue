@@ -62,14 +62,16 @@
                     let code;
                     200 === (code = res.body.code)
                         ?rs(res)
-                        :rj(code)
+                        :rj(res)
                 })
             },
             signInSucceed(res){
                 sessionStorage.setItem("userInfo",JSON.stringify(this.userInfo));
                 this.$router.push({name:"home"})
             },
-            signInFailed(code){}
+            signInFailed(res){
+                alert(res.body.data)
+            }
         },
         mounted() {
             this.$on("userConfirm", this.formNoValidate)
