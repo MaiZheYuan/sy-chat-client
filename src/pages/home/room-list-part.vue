@@ -33,6 +33,7 @@
             errHandle(){},
             roomCheck(item){
                 this._$eventBus.$emit("userListRefresh",item);
+                this._$eventBus.$emit("roomCurrentChange",item);
             },
         },
         mounted(){

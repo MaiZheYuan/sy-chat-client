@@ -1,6 +1,6 @@
 <template>
     <div class="chat-room">
-        <h1 class="tit" id="room-tit"><!--欢迎来到yyj的聊天室--></h1>
+        <h1 class="tit" id="room-tit" v-text="roomCurrent"></h1>
         <div class="content">
             <p class="chat-line"
                v-for="item in mesModel">
@@ -27,38 +27,49 @@
     export default {
         data() {
             return {
-                userId:"ksldfjk",
-                userMes:"",
+                roomCurrent: "",
+                userId: "",
+                userMes: "",
                 mesModel: [
                     {
                         type: "txt",
                         message: "我的施蒂利克防腐剂圣",
                         userId: "3435",
                         userName: "搜索",
-                        moment:"2017/01/02"
+                        moment: "2017/01/02"
                     },
                     {
                         type: "txt",
                         message: "我",
                         userId: "ksldfjk",
                         userName: "搜索",
-                        moment:"2017/01/02"
+                        moment: "2017/01/02"
                     },
                     {
                         type: "txt",
                         message: "的发送的方式的方式的发是多少的发斯蒂芬斯蒂芬",
                         userId: "ksldfjk",
                         userName: "搜索",
-                        moment:"2017/01/02"
-                    },{
+                        moment: "2017/01/02"
+                    }, {
                         type: "txt",
                         message: "水电费人认为日本454546454645454",
                         userId: "ksldfjk",
                         userName: "搜索",
-                        moment:"2017/01/02"
+                        moment: "2017/01/02"
                     }
                 ]
             }
+        },
+        methods: {
+            roomCurrentChange(roomName) {
+                this.roomCurrent = roomName;
+            }
+        },
+        mounted() {
+            let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+            this.userId = userInfo.userId || "";
+            this._$eventBus.$on("roomCurrentChange", this.roomCurrentChange);
         }
     }
 </script>
@@ -137,6 +148,7 @@
         margin-top: 10px;
         overflow: hidden;
     }
+
     .chat-man {
         float: left;
         display: inline-flex;
@@ -152,14 +164,17 @@
         background: #000;
         color: #fff;
     }
+
     .chat-moment {
         font-size: 10px;
         display: block;
     }
-    .chat-member{
+
+    .chat-member {
         font-size: 16px;
         font-weight: bold;
     }
+
     .chat-mess {
         box-sizing: border-box;
         display: inline-block;

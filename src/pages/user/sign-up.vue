@@ -25,8 +25,9 @@
                         value: "", id: "signUpPassword"
                     },
                     {
-                        label: "昵称：", tip: "2-4个中文字符",
-                        rule: /^[\u4E00-\u9FA5]{2,4}$/, isWarning: false,
+                        label: "昵称：", tip: "1-10个字符",
+//                        rule: /^[\u4E00-\u9FA5]{2,4}$/, isWarning: false,
+                        rule: /.{1,10}/, isWarning: false,
                         value: "", id: "signUpNickName"
                     }
                 ],
@@ -44,8 +45,8 @@
                 };
                 this.formModel.forEach(item => {
                     ( item.value.length === 0 || !item.rule.test(item.value) )
-                    && ( (item.value = "") || ( item.isWarning = true) )
-                    && (isRule = false );
+                        && ( (item.value = "") || ( item.isWarning = true) )
+                        && (isRule = false );
                     params[mapping[item.id]] = item.value;
                 });
                 isRule && this.signUp(params);

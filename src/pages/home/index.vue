@@ -30,7 +30,11 @@
             userListPart,
         },
         data() {
-            return {}
+            return {
+            }
+        },
+        methods:{
+
         },
         mounted(){
             document.querySelector("body").style.height = window.innerHeight + "px";
