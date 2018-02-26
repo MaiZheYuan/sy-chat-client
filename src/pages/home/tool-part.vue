@@ -115,7 +115,7 @@
                 })
             },
             roomCreateSucceed(){
-                this._$eventBus.$emit("roomListRefresh");
+                this._$eventBus.$emit("roomCreated");
 //                alert("新建成功！")
             },
             roomCreateFailed(code){
@@ -147,6 +147,7 @@
                 alert("搜索失败！")
             },
             joinRoomClickHandle(item){
+                if(this.curResultItem === item) return;
                 this.curResultItem && ( this.curResultItem.isActive = false );
                 this.curResultItem = item;
                 item.isActive = true;
@@ -164,7 +165,7 @@
                 this.$http.post(path,{params:params}).then(res=>{
                     this.roomCreateHandle(res).then(
                         res.body.code === 200
-                            ? this._$eventBus.$emit("roomListRefresh")
+                            ? this._$eventBus.$emit("roomJoined")
                             : alert(`加入房间失败！`)
                     )
                 },err=>{})

@@ -1,25 +1,27 @@
 <template>
     <div class="chat-room">
-        <h1 class="tit" id="room-tit" v-text="roomCurrent"></h1>
+        <h1 class="tit" id="room-tit" v-text="roomName"></h1>
         <div class="content">
             <p class="chat-line"
                v-for="item in mesModel">
                 <span class="chat-moment chat-member"
                       :class="{'chat-moment-me':item.userId==userId}"
-                      v-text="item.userName"></span>
+                      v-text="item.nickname"></span>
                 <span class="chat-moment"
                       :class="{'chat-moment-me':item.userId==userId}"
                       v-text="item.moment"></span>
                 <span class="chat-mess"
                       :class="{'chat-mess-me':item.userId==userId}"
-                      v-text="item.message"></span>
+                      v-text="item.txt"></span>
+                <span class="chat-in" v-text="memberIn"></span>
+                <span class="chat-out" v-text="memberOut"></span>
             </p>
         </div>
         <form class="tool">
             <div class="write-board">
-                <input type="text" name="write" class="write-box" v-model="userMes">
+                <input type="text" name="write" class="write-box" v-model.trim="txtSend">
             </div>
-            <a href="javascript:" class="send">发送</a>
+            <a href="javascript:" class="send" @click = "sendMess">发送</a>
         </form>
     </div>
 </template>
@@ -27,49 +29,100 @@
     export default {
         data() {
             return {
-                roomCurrent: "",
+                roomName: "",
+                roomId:"",
+                roomCurrentDetail:null,
                 userId: "",
-                userMes: "",
-                mesModel: [
-                    {
-                        type: "txt",
-                        message: "我的施蒂利克防腐剂圣",
-                        userId: "3435",
-                        userName: "搜索",
-                        moment: "2017/01/02"
-                    },
-                    {
-                        type: "txt",
-                        message: "我",
-                        userId: "ksldfjk",
-                        userName: "搜索",
-                        moment: "2017/01/02"
-                    },
-                    {
-                        type: "txt",
-                        message: "的发送的方式的方式的发是多少的发斯蒂芬斯蒂芬",
-                        userId: "ksldfjk",
-                        userName: "搜索",
-                        moment: "2017/01/02"
-                    }, {
-                        type: "txt",
-                        message: "水电费人认为日本454546454645454",
-                        userId: "ksldfjk",
-                        userName: "搜索",
-                        moment: "2017/01/02"
-                    }
-                ]
+                userInfo:null,
+                txtSend: "",
+                mesModel: []
             }
         },
         methods: {
             roomCurrentChange(roomName) {
-                this.roomCurrent = roomName;
+                this.roomName && this.socketRoomLeave();
+                this.roomName = roomName;
+                this.getRoomId(roomName);
+                this.mesModel = [];
+            },
+            getRoomId(roomName){
+                let params = {roomName:roomName};
+                let path = window.SYRESOURCE.room;
+                this.$http
+                    .get(path,{params:params})
+                    .then(res=>{
+                        res.body.code===200
+                            ?this.getRoomIdSucceed(res)
+                            :this.errHandle(res);
+                    },err=>{})
+            },
+            getRoomIdSucceed(res){
+                this.roomCurrentDetail = res.body.data;
+                this.roomId = res.body.data.roomId;
+                this.socketRoomJoin();
+            },
+            sendMess(){
+                this.txtSend && this.socketTxtSend();
+            },
+            socketRoomJoin(){
+                let mes = {
+                    type:"roomJoin",
+                    roomId:this.roomId,
+                    data:{
+                        userId:this.userId,
+                        nickname:this.userInfo.nickname
+                    }
+                };
+                window.SYRESOURCE.chatSocket.emit("clientMes",mes);
+            },
+            socketRoomLeave(){
+                let mes = {
+                    type:"roomLeave",
+                    roomId:this.roomId,
+                };
+                window.SYRESOURCE.chatSocket.emit("clientMes",mes)
+            },
+            socketTxtSend(){
+                let mes = {
+                    type:"chatTxt",
+                    roomId:this.roomId,
+                    data:{
+                        txt:this.txtSend,
+                    }
+                };
+                window.SYRESOURCE.chatSocket.emit("clientMes",mes);
+            },
+            socketMesGet(mes){
+                var date = new Date();
+                var content = {
+                    type: mes.type,
+                    txt: mes.data.txt,
+                    img:mes.data.img,
+                    userId: mes.userInfo.userId,
+                    nickname: mes.userInfo.nickname,
+                    moment: `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`
+                                + ` ${date.getHours()}:${date.getMinutes()}`,
+                    memberIn: mes.type==="roomJoin" ? `${mes.userInfo.userName}进入了房间` : "",
+                    memberOut: mes.type==="roomLeave" ? `${mes.userInfo.userName}离开了房间` : "",
+                };
+                this.mesModel.push(content);
+                console.log(mes,content,"yyyyyyyyyyyyyyyy");
+            },
+            errHandle(res){
+               console.error(res.body.data)
+            },
+            socketLink(){
+                let chatSocket = io.connect();
+                window.SYRESOURCE.chatSocket = chatSocket;
             }
         },
         mounted() {
             let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-            this.userId = userInfo.userId || "";
-            this._$eventBus.$on("roomCurrentChange", this.roomCurrentChange);
+            this.userInfo = userInfo;
+            this.userId = userInfo.userId;
+            this._$eventBus.$on("roomChecked", this.roomCurrentChange);
+            this.socketLink();
+            window.SYRESOURCE.chatSocket.on("serverMes",this.socketMesGet);
         }
     }
 </script>
@@ -138,6 +191,7 @@
         padding: 0 5px;
         white-space: nowrap;
         flex-shrink: 0;
+        color: #000;
     }
 
     .send:hover {

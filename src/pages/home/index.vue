@@ -37,15 +37,11 @@
             bodyResize(){
                 document.querySelector("body").style.height = window.innerHeight + "px";
             },
-            socketLink(){
-                let chatSocket = io.connect();
-                window.SYRESOURCE.chatSocket = chatSocket;
-            }
         },
         mounted(){
             this.bodyResize();
-            window.addEventListener("resize",this.bodyResize)
-            this.socketLink();
+            window.addEventListener("resize",this.bodyResize);
+//            this.socketLink();
         }
     }
 </script>

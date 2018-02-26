@@ -9,6 +9,7 @@
     export default {
         data() {
             return {
+                curListItem:null,
                 listData:[]
             }
         },
@@ -32,13 +33,15 @@
             },
             errHandle(){},
             roomCheck(item){
-                this._$eventBus.$emit("userListRefresh",item);
-                this._$eventBus.$emit("roomCurrentChange",item);
+                if( this.curListItem === item ) return;
+                this.curListItem = item;
+                this._$eventBus.$emit("roomChecked",item);
             },
         },
         mounted(){
             this.getUserRoomList();
-            this._$eventBus.$on("roomListRefresh",this.getUserRoomList);
+            this._$eventBus.$on("roomCreated",this.getUserRoomList);
+            this._$eventBus.$on("roomJoined",this.getUserRoomList);
         }
     }
 </script>

@@ -66,6 +66,7 @@
                 })
             },
             signInSucceed(res){
+                this.userInfo.nickname = res.body.data.nickname;
                 sessionStorage.setItem("userInfo",JSON.stringify(this.userInfo));
                 this.$router.push({name:"home"})
             },
