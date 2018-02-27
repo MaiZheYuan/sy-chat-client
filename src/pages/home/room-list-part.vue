@@ -1,7 +1,8 @@
 <template>
     <ul class="room-list">
         <li class="room-list-item" v-for="item in roomList" @click="roomCheck(item)">
-            <span class="room-list-item-content" v-text="item" :title="item"></span>
+            <span class="room-list-item-content" v-text="item.roomName"
+                  :title="item.roomName" :class="{active:item.isActive}"></span>
         </li>
     </ul>
 </template>
@@ -10,12 +11,7 @@
         data() {
             return {
                 curListItem:null,
-                listData:[]
-            }
-        },
-        computed:{
-            roomList(){
-                return this.listData.reverse();
+                roomList:[]
             }
         },
         methods:{
@@ -27,15 +23,23 @@
                     .get(path,{params:params})
                     .then(res=>{
                         res.body.code===200
-                            ?this.listData = res.body.data || []
+                            ?this.showUserRoomList(res)
                             :this.errHandle();
                     },err=>{})
+            },
+            showUserRoomList(res){
+                let data = res.body.data || [];
+                this.roomList = data.map(item=>{
+                    return {roomName:item,isActive:false};
+                }).reverse();
             },
             errHandle(){},
             roomCheck(item){
                 if( this.curListItem === item ) return;
+                this.curListItem && ( this.curListItem.isActive=false );
                 this.curListItem = item;
-                this._$eventBus.$emit("roomChecked",item);
+                item.isActive = true;
+                this._$eventBus.$emit("roomChecked",item.roomName);
             },
         },
         mounted(){
@@ -54,7 +58,7 @@
         padding-top: 10px;
         cursor: pointer;
     }
-    .room-list-item:hover .room-list-item-content{
+    .room-list .active,.room-list-item:hover .room-list-item-content{
         color: #000;
         font-weight: bold;
         text-shadow: 1px 0 1px rgba(0, 0, 0, 1);

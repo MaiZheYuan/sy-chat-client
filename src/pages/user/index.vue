@@ -23,7 +23,7 @@
             return {
                 curItem:null,
                 routeList:[
-                    {tit:"登录",routeName:"signIn",isActive:true},
+                    {tit:"登录",routeName:"signIn",isActive:false},
                     {tit:"注册",routeName:"signUp",isActive:false}
                 ]
             }
@@ -43,6 +43,12 @@
             userConfirm(){
                 this.$refs.signForm.$emit("userConfirm");
             }
+        },
+        mounted(){
+            let curRouteName = this.$route.name;
+            this.routeList.forEach(item=>{
+                item.isActive = (item.routeName === curRouteName);
+            })
         }
     }
 </script>
@@ -107,6 +113,7 @@
         color:#f00;
     }
     .login-btn{
+        font-size: 16px;
         display: inline-block;
         width: 35px;
         height: 35px;

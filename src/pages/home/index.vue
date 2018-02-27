@@ -1,7 +1,7 @@
 <template>
     <div class="home">
         <div class="home-room-list">
-            <toolPart></toolPart>
+            <roomToolPart></roomToolPart>
             <roomListPart></roomListPart>
         </div>
         <div class="home-room-chatting">
@@ -11,6 +11,7 @@
             </div>
         </div>
         <div class="home-room-member">
+            <userToolPart></userToolPart>
             <userListPart></userListPart>
         </div>
     </div>
@@ -19,14 +20,16 @@
     import chatPart from "./chat-part.vue";
     import navPart from "./nav-part.vue";
     import roomListPart from "./room-list-part.vue";
-    import toolPart from "./tool-part.vue";
+    import roomToolPart from "./room-tool-part.vue";
+    import userToolPart from "./user-tool-part.vue";
     import userListPart from "./user-list-part.vue";
     export default {
         components:{
             chatPart,
             navPart,
             roomListPart,
-            toolPart,
+            roomToolPart,
+            userToolPart,
             userListPart,
         },
         data() {

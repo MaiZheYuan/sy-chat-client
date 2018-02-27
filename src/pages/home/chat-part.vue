@@ -4,17 +4,25 @@
         <div class="content">
             <p class="chat-line"
                v-for="item in mesModel">
-                <span class="chat-moment chat-member"
-                      :class="{'chat-moment-me':item.userId==userId}"
-                      v-text="item.nickname"></span>
-                <span class="chat-moment"
-                      :class="{'chat-moment-me':item.userId==userId}"
-                      v-text="item.moment"></span>
-                <span class="chat-mess"
-                      :class="{'chat-mess-me':item.userId==userId}"
-                      v-text="item.txt"></span>
-                <span class="chat-in" v-text="memberIn"></span>
-                <span class="chat-out" v-text="memberOut"></span>
+                <transition-group v-if="item.type==='chatTxt'">
+                    <span class="chat-moment chat-member" key="member"
+                          :class="{'chat-moment-me':item.userId==userId}"
+                          v-text="item.nickname"></span>
+                    <span class="chat-moment" key="moment"
+                          :class="{'chat-moment-me':item.userId==userId}"
+                          v-text="item.moment"></span>
+                    <span class="chat-mess" key="mess"
+                          :class="{'chat-mess-me':item.userId==userId}"
+                          v-text="item.txt"></span>
+                </transition-group>
+                <transition v-if="item.type==='roomJoin'">
+                    <span class="chat-in" v-text="`${item.nickname}进入了房间`"
+                          :title="item.moment"></span>
+                </transition>
+                <transition v-if="item.type==='roomLeave'">
+                    <span class="chat-out" v-text="`${item.nickname}离开了房间`"
+                          :title="item.moment"></span>
+                </transition>
             </p>
         </div>
         <form class="tool">
@@ -93,20 +101,27 @@
                 window.SYRESOURCE.chatSocket.emit("clientMes",mes);
             },
             socketMesGet(mes){
-                var date = new Date();
-                var content = {
+                let date = new Date();
+                let mesData = mes.data || {};
+                let content = {
                     type: mes.type,
-                    txt: mes.data.txt,
-                    img:mes.data.img,
                     userId: mes.userInfo.userId,
                     nickname: mes.userInfo.nickname,
                     moment: `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`
-                                + ` ${date.getHours()}:${date.getMinutes()}`,
-                    memberIn: mes.type==="roomJoin" ? `${mes.userInfo.userName}进入了房间` : "",
-                    memberOut: mes.type==="roomLeave" ? `${mes.userInfo.userName}离开了房间` : "",
+                    + ` ${date.getHours()}:${date.getMinutes()}`,
+                    txt: mesData.txt,
+                    img: mesData.img,
                 };
                 this.mesModel.push(content);
-                console.log(mes,content,"yyyyyyyyyyyyyyyy");
+                this.socketMesGetHandle(mes);
+            },
+            socketMesGetHandle(mes){
+                switch(mes.type){
+                    case "chatTxt": return this.txtSend="";
+                    case "roomJoin": return this._$eventBus.$emit("userIn",mes.userInfo.userId,this.roomId);
+                    case "roomLeave": return this._$eventBus.$emit("userOut",mes.userInfo.userId);
+                    default: return;
+                }
             },
             errHandle(res){
                console.error(res.body.data)
