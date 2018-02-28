@@ -36,7 +36,7 @@
             showRoomUserList(res) {
                 var data = res.body.data || [];
                 this.userList = data.map(item => {
-                    item.isInRoom = item.userId === this.userSelfInfo.userId;
+                    item.isInRoom = ( item.userId === this.userSelfInfo.userId );
                     return item;
                 })
             },

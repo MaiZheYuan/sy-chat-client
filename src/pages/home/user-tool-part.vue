@@ -200,8 +200,10 @@
                             })
                         }*/
         },
-        mounted() {
+        created(){
             this.userInfo = JSON.parse(sessionStorage.getItem("userInfo")) || {};
+        },
+        mounted() {
         }
     }
 </script>
