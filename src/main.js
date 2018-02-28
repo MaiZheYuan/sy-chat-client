@@ -18,5 +18,5 @@ new Vue({
 })
 window.addEventListener("unload",function () {
     // window.SYRESOURCE.chatSocketDisconnect();
-    window.SYRESOURCE.chatSocketRoomLeave();
+    // window.SYRESOURCE.chatSocketRoomLeave();
 });

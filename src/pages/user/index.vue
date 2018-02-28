@@ -50,7 +50,7 @@
                 item.isActive = (item.routeName === curRouteName);
             });
 //            window.SYRESOURCE.chatSocketDisconnect();
-            window.SYRESOURCE.chatSocketRoomLeave();
+//            window.SYRESOURCE.chatSocketRoomLeave();
         }
     }
 </script>
