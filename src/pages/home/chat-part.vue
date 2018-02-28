@@ -45,6 +45,7 @@
                 userInfo:null,
                 txtToServer: "",
                 mesModel: [],
+                isUsingBrowser:true,
             }
         },
         methods: {
@@ -135,7 +136,7 @@
                     let clientHei = contentBoard.clientHeight;
                     let scrHei = contentBoard.scrollHeight;
                     let scrTillBottom = scrHei - scrTop -clientHei;
-                    if(parseInt(scrTillBottom) < 5 && !document.hidden){
+                    if(parseInt(scrTillBottom) < 5 && !document.hidden && this.isUsingBrowser){
                         this.$nextTick(()=>{
                             contentBoard.scrollTop = contentBoard.scrollHeight-clientHei
                         });
@@ -148,7 +149,13 @@
                 this.socketRoomLeave();
                 window.SYRESOURCE.chatSocket.disconnect();
                 window.SYRESOURCE.chatSocket = null;
-            }
+            },
+            isUsingBrowserFalse(){
+                this.isUsingBrowser = false;
+            },
+            isUsingBrowserTrue(){
+                this.isUsingBrowser = true;
+            },
         },
         mounted() {
             let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
@@ -158,11 +165,15 @@
             this._$eventBus.$on("chatSocketConnected",()=>{
                 window.SYRESOURCE.chatSocket.on("serverMes",this.socketMesGet);
             });
-            window.addEventListener("unload",this.socketDisconnect)
+            window.addEventListener("unload",this.socketDisconnect);
+            document.addEventListener("mouseleave",this.isUsingBrowserFalse);
+            document.addEventListener("mouseenter",this.isUsingBrowserTrue);
         },
         destroyed(){
             this.socketDisconnect();
-            window.removeEventListener("unload",this.socketDisconnect)
+            window.removeEventListener("unload",this.socketDisconnect);
+            document.removeEventListener("mouseleave",this.isUsingBrowserFalse);
+            document.removeEventListener("mouseenter",this.isUsingBrowserTrue);
         }
     }
 </script>
