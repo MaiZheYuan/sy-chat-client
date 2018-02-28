@@ -44,7 +44,14 @@
         mounted(){
             this.bodyResize();
             window.addEventListener("resize",this.bodyResize);
-//            this.socketLink();
+            window.SYRESOURCE.chatSocket = io.connect();
+            this._$eventBus.$emit("chatSocketConnected");
+        },
+        destroyed(){
+            /**
+             * 清除所有eventBus事件
+             */
+            this._$eventBus.$off();
         }
     }
 </script>

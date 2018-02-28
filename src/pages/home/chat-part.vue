@@ -126,10 +126,6 @@
             errHandle(res){
                console.error(res.body.data)
             },
-            socketLink(){
-                let chatSocket = io.connect();
-                window.SYRESOURCE.chatSocket = chatSocket;
-            },
             socketDisconnect(){
                 this.socketRoomLeave();
                 window.SYRESOURCE.chatSocket.disconnect();
@@ -141,8 +137,9 @@
             this.userInfo = userInfo;
             this.userId = userInfo.userId;
             this._$eventBus.$on("roomChecked", this.roomCurrentChange);
-            this.socketLink();
-            window.SYRESOURCE.chatSocket.on("serverMes",this.socketMesGet);
+            this._$eventBus.$on("chatSocketConnected",()=>{
+                window.SYRESOURCE.chatSocket.on("serverMes",this.socketMesGet);
+            });
             window.addEventListener("unload",this.socketDisconnect)
         },
         destroyed(){
