@@ -16,3 +16,7 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+window.addEventListener("unload",function () {
+    // window.SYRESOURCE.chatSocketDisconnect();
+    window.SYRESOURCE.chatSocketRoomLeave();
+});

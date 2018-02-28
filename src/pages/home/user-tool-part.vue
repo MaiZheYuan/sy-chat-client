@@ -1,5 +1,5 @@
 <template>
-    <div class="tool-part" @mouseleave="curItemDerective">
+    <div class="tool-part user-tool-part" @mouseleave="curItemDerective">
         <ul class="tool-part-list">
             <li class="tool-part-list-item" v-for="item in toolList"
                 :class="{active:item.isActive}">
@@ -205,3 +205,8 @@
         }
     }
 </script>
+<style>
+    div.user-tool-part, .user-tool-part .tool-part-form-box{
+        background: #f2f2f2;
+    }
+</style>

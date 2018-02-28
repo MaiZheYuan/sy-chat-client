@@ -55,9 +55,12 @@
                 }
             },
             userIn(userId,roomId) {
+                let user;
                 if(userId === this.userSelfInfo.userId) { return this.getRoomUserList(roomId) };
-                let user = this.userFind(userId);
-                user.isInRoom = true;
+                user = this.userFind(userId);
+                user
+                    ?(user.isInRoom = true)
+                    :(this.getRoomUserList(roomId));
             },
             userOut(userId) {
                 if(userId === this.userSelfInfo.userId) { return };

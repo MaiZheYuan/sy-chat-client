@@ -48,7 +48,9 @@
             let curRouteName = this.$route.name;
             this.routeList.forEach(item=>{
                 item.isActive = (item.routeName === curRouteName);
-            })
+            });
+//            window.SYRESOURCE.chatSocketDisconnect();
+            window.SYRESOURCE.chatSocketRoomLeave();
         }
     }
 </script>

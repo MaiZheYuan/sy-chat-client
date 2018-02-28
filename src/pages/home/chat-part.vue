@@ -16,11 +16,11 @@
                           v-text="item.txt"></span>
                 </transition-group>
                 <transition v-if="item.type==='roomJoin'">
-                    <span class="chat-in" v-text="`${item.nickname}进入了房间`"
+                    <span class="chat-in" v-text="`${item.nickname} 进入了房间`"
                           :title="item.moment"></span>
                 </transition>
                 <transition v-if="item.type==='roomLeave'">
-                    <span class="chat-out" v-text="`${item.nickname}离开了房间`"
+                    <span class="chat-out" v-text="`${item.nickname} 离开了房间`"
                           :title="item.moment"></span>
                 </transition>
             </p>
