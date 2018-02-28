@@ -1,7 +1,7 @@
 <template>
     <div class="chat-room">
         <h1 class="tit" id="room-tit" v-text="roomName"></h1>
-        <div class="content">
+        <div class="content" ref="contentBoard">
             <p class="chat-line"
                v-for="item in mesModel">
                 <transition-group v-if="item.type==='chatTxt'">
@@ -44,7 +44,7 @@
                 userId: "",
                 userInfo:null,
                 txtToServer: "",
-                mesModel: []
+                mesModel: [],
             }
         },
         methods: {
@@ -103,27 +103,43 @@
                 window.SYRESOURCE.chatSocket.emit("clientMes",mes);
             },
             socketMesGet(mes){
-                let date = new Date();
-                let mesData = mes.data || {};
-                let content = {
-                    type: mes.type,
-                    userId: mes.userInfo.userId,
-                    nickname: mes.userInfo.nickname,
-                    moment: `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`
-                    + ` ${date.getHours()}:${date.getMinutes()}`,
-                    txt: mesData.txt,
-                    img: mesData.img,
-                };
-                this.mesModel.push(content);
                 this.socketMesGetHandle(mes);
             },
             socketMesGetHandle(mes){
+                this.socketMesShow(mes);
                 switch(mes.type){
                     case "chatTxt": return this.txtToServer="";
                     case "roomJoin": return this._$eventBus.$emit("userIn",mes.userInfo.userId,this.roomId);
                     case "roomLeave": return this._$eventBus.$emit("userOut",mes.userInfo.userId);
                     default: return;
                 }
+            },
+            socketMesShow(mes){
+                    let date = new Date();
+                    let mesData = mes.data || {};
+                    let content = {
+                        type: mes.type,
+                        userId: mes.userInfo.userId,
+                        nickname: mes.userInfo.nickname,
+                        moment: `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`
+                        + ` ${date.getHours()}:${date.getMinutes()}`,
+                        txt: mesData.txt,
+                        img: mesData.img,
+                    };
+                    this.mesModel.push(content);
+                    this.scrollHandle();
+            },
+            scrollHandle(){
+                    let contentBoard = this.$refs.contentBoard;
+                    let scrTop = contentBoard.scrollTop;
+                    let clientHei = contentBoard.clientHeight;
+                    let scrHei = contentBoard.scrollHeight;
+                    let scrTillBottom = scrHei - scrTop -clientHei;
+                    if(parseInt(scrTillBottom) < 5 && !document.hidden){
+                        this.$nextTick(()=>{
+                            contentBoard.scrollTop = contentBoard.scrollHeight-clientHei
+                        });
+                    }
             },
             errHandle(res){
                console.error(res.body.data)
