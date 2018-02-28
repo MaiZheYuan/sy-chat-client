@@ -8,12 +8,12 @@
                     <span class="chat-moment chat-member" key="member"
                           :class="{'chat-moment-me':item.userId==userId}"
                           v-text="item.nickname"></span>
-                    <span class="chat-moment" key="moment"
+<!--                    <span class="chat-moment" key="moment"
                           :class="{'chat-moment-me':item.userId==userId}"
-                          v-text="item.moment"></span>
+                          v-text="item.moment"></span>-->
                     <span class="chat-mess" key="mess"
                           :class="{'chat-mess-me':item.userId==userId}"
-                          v-text="item.txt"></span>
+                          v-text="item.txt" :title="item.moment"></span>
                 </transition-group>
                 <transition v-if="item.type==='roomJoin'">
                     <span class="chat-in" v-text="`${item.nickname} 进入了房间`"
@@ -27,9 +27,10 @@
         </div>
         <form class="tool">
             <div class="write-board">
-                <input type="text" name="write" class="write-box" v-model.trim="txtSend">
+                <input type="text" name="write" class="write-box"
+                       v-model.trim="txtToServer" @keypress.enter.prevent="sendMess">
             </div>
-            <a href="javascript:" class="send" @click = "sendMess">发送</a>
+            <span class="send pointer" @click = "sendMess" >发送</span>
         </form>
     </div>
 </template>
@@ -42,7 +43,7 @@
                 roomCurrentDetail:null,
                 userId: "",
                 userInfo:null,
-                txtSend: "",
+                txtToServer: "",
                 mesModel: []
             }
         },
@@ -70,7 +71,8 @@
                 this.socketRoomJoin();
             },
             sendMess(){
-                this.txtSend && this.socketTxtSend();
+                !this.roomName && alert("请先选择左侧列表中的房间，才能发送信息！");
+                this.txtToServer && this.socketTxtSend();
             },
             socketRoomJoin(){
                 let mes = {
@@ -95,7 +97,7 @@
                     type:"chatTxt",
                     roomId:this.roomId,
                     data:{
-                        txt:this.txtSend,
+                        txt:this.txtToServer,
                     }
                 };
                 window.SYRESOURCE.chatSocket.emit("clientMes",mes);
@@ -117,7 +119,7 @@
             },
             socketMesGetHandle(mes){
                 switch(mes.type){
-                    case "chatTxt": return this.txtSend="";
+                    case "chatTxt": return this.txtToServer="";
                     case "roomJoin": return this._$eventBus.$emit("userIn",mes.userInfo.userId,this.roomId);
                     case "roomLeave": return this._$eventBus.$emit("userOut",mes.userInfo.userId);
                     default: return;
@@ -221,7 +223,7 @@
     }
 
     .chat-line {
-        margin-top: 10px;
+        margin-top: 20px;
         overflow: hidden;
     }
 
@@ -244,17 +246,19 @@
     .chat-moment {
         font-size: 10px;
         display: block;
+        color: #777;
     }
 
     .chat-member {
-        font-size: 16px;
+        font-size: 14px;
         font-weight: bold;
+        color: #777;
     }
 
     .chat-mess {
         box-sizing: border-box;
         display: inline-block;
-        max-width: 60%;
+        max-width: 80%;
         overflow: hidden;
         border: 1px solid #ccc;
         padding: 6px;
