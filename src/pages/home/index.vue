@@ -1,5 +1,8 @@
 <template>
     <div class="home">
+        <div class="chat-media-route">
+            <router-view></router-view>
+        </div>
         <div class="home-room-list">
             <roomToolPart></roomToolPart>
             <roomListPart></roomListPart>

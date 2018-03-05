@@ -4,6 +4,8 @@ import userIndex from '@pages/user/index.vue';
 import userSignIn from '@pages/user/sign-in.vue';
 import userSignUp from '@pages/user/sign-up.vue';
 import home from '@pages/home/index.vue';
+import chatVideo from '@pages/chatMedia/chatVideo.vue';
+import chatAudio from '@pages/chatMedia/chatAudio.vue';
 
 Vue.use(Router);
 
@@ -35,6 +37,18 @@ export default new Router({
             path: '/home',
             name: 'home',
             component: home,
+            children:[
+                {
+                    path: 'video',
+                    name: '视频通话',
+                    component: chatVideo,
+                },
+                {
+                    path: 'audio',
+                    name: '语音通话',
+                    component: chatAudio,
+                }
+            ]
         }
     ]
 })
