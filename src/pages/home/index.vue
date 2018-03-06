@@ -82,7 +82,7 @@
     }
     .chat-media-route{
         position: fixed;
-        top: 0;
+        bottom: 0;
         width: 100%;
         background: #000;
         text-align: center;
