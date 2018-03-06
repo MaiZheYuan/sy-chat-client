@@ -1,6 +1,7 @@
 <template>
     <div>
-        Video
+        <video id="remoteVideo" autoplay></video>
+        <video id="localVideo" autoplay></video>
     </div>
 </template>
 <script>

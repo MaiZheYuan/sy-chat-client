@@ -8,8 +8,8 @@
                     <span class="chat-moment chat-member" key="member"
                           :class="{'chat-moment-me':item.userId==userId}"
                           v-text="item.nickname"></span>
-<!--                    <span class="chatMedia-moment" key="moment"
-                          :class="{'chatMedia-moment-me':item.userId==userId}"
+<!--                    <span class="chat-media-moment" key="moment"
+                          :class="{'chat-media-moment-me':item.userId==userId}"
                           v-text="item.moment"></span>-->
                     <span class="chat-mess" key="mess"
                           :class="{'chat-mess-me':item.userId==userId}"

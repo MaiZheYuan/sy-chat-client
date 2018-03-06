@@ -26,7 +26,7 @@
     import roomToolPart from "./room-tool-part.vue";
     import userToolPart from "./user-tool-part.vue";
     import userListPart from "./user-list-part.vue";
-    import mediaRoute from "@pages/chatMedia/mediaRoute.vue";
+    import mediaRoute from "@pages/chat-media/media-route.vue";
     export default {
         components:{
             chatPart,
@@ -79,5 +79,14 @@
     }
     .home-room-chatting-current{
         height: 100%;
+    }
+    .chat-media-route{
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: #000;
+        text-align: center;
+        z-index: 1;
+        color: #fff;
     }
 </style>

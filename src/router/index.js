@@ -4,8 +4,8 @@ import userIndex from '@pages/user/index.vue';
 import userSignIn from '@pages/user/sign-in.vue';
 import userSignUp from '@pages/user/sign-up.vue';
 import home from '@pages/home/index.vue';
-import chatVideo from '@pages/chatMedia/chatVideo.vue';
-import chatAudio from '@pages/chatMedia/chatAudio.vue';
+import chatVideo from '@pages/chat-media/chat-video.vue';
+import chatAudio from '@pages/chat-media/chat-audio.vue';
 
 Vue.use(Router);
 

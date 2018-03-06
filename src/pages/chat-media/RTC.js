@@ -26,7 +26,7 @@ export default {
         this.localVideoPlayer = localVideo;
         this.socket = socket;
         this.pc = new PeerConnection(this.iceServer);
-        this.socket.on("signaling",this.signalingHandle);
+        // this.socket.on("clientMes",this.signalingHandle);
         this.pc.ontrack = this.showRemoteVideo;
         this.pc.onicecandidate = this.saveLocalCD;
     },

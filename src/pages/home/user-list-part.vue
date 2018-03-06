@@ -13,7 +13,7 @@
                           v-for="meItem in mediaList"
                           :key="meItem.id"
                           v-text="meItem.tit"
-                          @click="mediaStart(item,meItem)"></span>
+                          @click="mediaStart(meItem)"></span>
                 </div>
             </transition>
         </li>
@@ -23,6 +23,7 @@
     export default {
         data() {
             return {
+                roomId:"",
                 curUser:null,
                 userList: [],
                 mediaList:[
@@ -54,13 +55,13 @@
                     }, err => {
                     })
             },
-            showRoomUserList(res) {
+/*            showRoomUserList(res) {
                 var data = res.body.data || [];
                 this.userList = data.map(item => {
                     item.isInRoom = ( item.userId === this.userSelfInfo.userId );
                     return item;
                 })
-            },
+            },*/
             succeedHandle(res) {
                 res.body.data[0] && ( res.body.data[0].role = this.roleType[0]);
                 this.userList = res.body.data.map(item=>{
@@ -74,11 +75,12 @@
             userFind(userId) {
                 for (let user of this.userList) {
                     if (user.userId === userId) {
-                        return user
+                        return user;
                     };
                 }
             },
             userIn(userId,roomId) {
+                this.roomId = roomId;
                 let user;
                 if(userId === this.userSelfInfo.userId) { return this.getRoomUserList(roomId) };
                 user = this.userFind(userId);
@@ -91,8 +93,8 @@
                 let user = this.userFind(userId);
                 user.isInRoom = false;
             },
-            mediaStart(userItem,mediaItem){
-
+            mediaStart(mediaItem){
+                this._$eventBus.$emit("chatMedia",this.curUser,mediaItem,this.roomId);
             },
         },
         mounted() {
