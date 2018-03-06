@@ -1,7 +1,7 @@
 <template>
     <div class="home">
         <div class="chat-media-route">
-            <router-view></router-view>
+            <mediaRoute></mediaRoute>
         </div>
         <div class="home-room-list">
             <roomToolPart></roomToolPart>
@@ -26,6 +26,7 @@
     import roomToolPart from "./room-tool-part.vue";
     import userToolPart from "./user-tool-part.vue";
     import userListPart from "./user-list-part.vue";
+    import mediaRoute from "@pages/chatMedia/mediaRoute.vue";
     export default {
         components:{
             chatPart,
@@ -34,6 +35,7 @@
             roomToolPart,
             userToolPart,
             userListPart,
+            mediaRoute
         },
         data() {
             return {

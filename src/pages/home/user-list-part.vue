@@ -1,10 +1,21 @@
 <template>
     <ul class="user-list">
-        <li class="user-list-item" v-for="item in userList">
+        <li class="user-list-item"
+            v-for="item in userList"
+            @click="userSelect(item)">
             <span class="user-list-item-content" v-text="item.nickname"
-                  :class="{'user-list-item-inline':item.isInRoom}"
+                  :class="{'user-list-item-inline':item.isInRoom,'active':item.isActive}"
                   :title="item.nickname"></span>
             <span v-text="item.role" class="user-list-item-role"></span>
+            <transition name="slide-down">
+                <div class="media-btn-box" v-if="item.isActive">
+                    <span class="audio-btn"
+                          v-for="meItem in mediaList"
+                          :key="meItem.id"
+                          v-text="meItem.tit"
+                          @click="mediaStart(item,meItem)"></span>
+                </div>
+            </transition>
         </li>
     </ul>
 </template>
@@ -12,7 +23,12 @@
     export default {
         data() {
             return {
+                curUser:null,
                 userList: [],
+                mediaList:[
+                    {tit:"语言通话",id:"audio"},
+                    {tit:"视频通话",id:"video"},
+                ],
                 roleType: {
                     0: "房主"
                 },
@@ -20,6 +36,11 @@
             }
         },
         methods: {
+            userSelect(item){
+                this.curUser && ( this.curUser.isActive=false );
+                item.isActive = true;
+                this.curUser = item;
+            },
             getRoomUserList(roomId) {
                 let params = {roomId: roomId};
 //                if( !params ) {return this.$router.push({name:"user"});};
@@ -42,7 +63,10 @@
             },
             succeedHandle(res) {
                 res.body.data[0] && ( res.body.data[0].role = this.roleType[0]);
-                this.userList = res.body.data;
+                this.userList = res.body.data.map(item=>{
+                    item.isActive = false;
+                    return item;
+                });
 //                this.showRoomUserList(res);
             },
             errHandle() {
@@ -67,6 +91,9 @@
                 let user = this.userFind(userId);
                 user.isInRoom = false;
             },
+            mediaStart(userItem,mediaItem){
+
+            },
         },
         mounted() {
             let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
@@ -89,7 +116,7 @@
         cursor: pointer;
     }
 
-    .user-list-item:hover .user-list-item-content {
+    .user-list .active,.user-list-item:hover .user-list-item-content {
         color: #000;
         font-weight: bold;
         text-shadow: 1px 0 1px rgba(0, 0, 0, 1);
@@ -122,5 +149,27 @@
 
     .user-list-item-inline {
         color: #000;
+    }
+    .media-btn-box{
+        background: #000;
+        color: #aaa;
+        overflow: hidden;
+        margin-top: 5px;
+        text-align: center;
+    }
+    .slide-down-enter-active, .slide-down-leave-active {
+        transition: all .5s;
+    }
+
+    .slide-down-enter, .slide-down-leave-to {
+        transform: scaleY(0);
+    }
+    .audio-btn:hover,.video-btn:hover{
+        color: #fff;
+    }
+    .video-btn,.audio-btn{
+        line-height: 2;
+        display: inline-block;
+        margin: 0 6px;
     }
 </style>
