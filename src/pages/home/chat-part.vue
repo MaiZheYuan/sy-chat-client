@@ -183,12 +183,13 @@
         padding: 5px;
         width: 100%;
         height: 100%;
-        max-width: 1000px;
         margin: auto;
         display: flex;
         flex-direction: column;
     }
-
+    .tit,.content,.tool{
+        background: rgba(250,250,250,1);
+    }
     .tit {
         box-sizing: border-box;
         text-align: center;
@@ -235,6 +236,7 @@
         white-space: normal;
         word-wrap: break-word;
         word-break: break-all;
+        background: transparent;
     }
 
     .send {
