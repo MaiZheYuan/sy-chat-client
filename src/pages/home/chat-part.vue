@@ -69,6 +69,7 @@
             getRoomIdSucceed(res){
                 this.roomCurrentDetail = res.body.data;
                 this.roomId = res.body.data.roomId;
+                window.$ROOMID = res.body.data.roomId;
                 this.socketRoomJoin();
             },
             sendMess(){

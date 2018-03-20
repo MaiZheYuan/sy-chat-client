@@ -49,9 +49,6 @@
             this.routeList.forEach(item=>{
                 item.isActive = (item.routeName === curRouteName);
             });
-            this.$http.get("/ffff/eeee").then((res)=>{
-                debugger;
-            },err=>{ debugger })
 //            window.SYRESOURCE.chatSocketDisconnect();
 //            window.SYRESOURCE.chatSocketRoomLeave();
         }

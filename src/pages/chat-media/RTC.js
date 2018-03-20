@@ -1,3 +1,4 @@
+import { EventBus } from "@src/EventBus/EventBus";
 let PeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
 let iceServer = {
     "iceServers": [
@@ -11,18 +12,14 @@ let iceServer = {
         },
     ]
 };//p2p连接服务
-let mediaModel; //数据缓存区
+let mediaModel = null; //数据缓存区
 
 export default {
     install(localVideo, remoteVideo) {
-        return new Promise(function (rs,rj) {
-            mediaModel.remoteVideoPlayer = remoteVideo;
-            mediaModel.localVideoPlayer = localVideo;
             mediaModel = {
-                res:null,
                 iceGatheringState:null,//本地cd收集状态
-                remoteVideoPlayer: null,//播放远程视频的vedio标签
-                localVideoPlayer: null,//播放本地视频的vedio标签
+                remoteVideoPlayer: remoteVideo,//播放远程视频的vedio标签
+                localVideoPlayer: localVideo,//播放本地视频的vedio标签
                 pc: null,//PeerConnection实例
                 localCd: [],//本地candidate
                 remoteCd: [],//远程candidate
@@ -32,9 +29,10 @@ export default {
             mediaModel.pc = new PeerConnection(iceServer);
             mediaModel.pc.ontrack = showRemoteVideo;
             mediaModel.pc.onicecandidate = saveLocalCD;
-            rs();
-        });
+            return tool;
     },
+};
+let tool = {
     caller: {
         setLocal(options = {audio: false, video: true}) {
             return new Promise(function (res, rej) {
@@ -57,7 +55,7 @@ export default {
         },
     },
     answerer: {
-        setRemote(options = {audio: false, video: true}, remoteSdp, remoteCd) {
+        setRemote(remoteSdp, remoteCd,options = {audio: false, video: true}, ) {
             mediaModel.remoteSdp = remoteSdp;
             mediaModel.remoteCd = remoteCd;
             return new Promise(function (res, rej) {
@@ -101,17 +99,19 @@ function linkLocalVideo(mediaStream) {
 
 //将后台发过来的cd设置进pc
 function addRemoteCd() {
-    mediaModel.remoteCd.forEach((item, index) => {
-        mediaModel.pc.addIceCandidate(new RTCIceCandidate(item));
-        if (index === this.length - 1) {
-            return mediaModel.pc.addIceCandidate(new RTCIceCandidate(item)) //promise
-        }
+    return new Promise(function (rs,rj) {
+        mediaModel.remoteCd.forEach((item, index) => {
+            mediaModel.pc.addIceCandidate(new RTCIceCandidate(item));
+            if (index === mediaModel.remoteCd.length - 1) {
+                rs();
+            }
+        })
     })
 };
 
 //将后台发送过来了的sdp设置为pc的remoteSdp
 function setRemoteSdp() {
-    new Promise(function (rs, rj) {
+    return new Promise(function (rs, rj) {
         mediaModel.pc.setRemoteDescription(mediaModel.remoteSdp, rs, rj);
     })
 };
@@ -151,10 +151,10 @@ function createAnswer() {
 
 //本地cd,sdp准备完毕
 function localCompete() {
-    if(!mediaModel.iceGatheringState || !mediaModel.localSdp) return;
-    let params = {
-        sdp:mediaModel.localSdp,
-        cd:mediaModel.localCd,
-    };
-    mediaModel.res(params);
+        if(mediaModel.iceGatheringState!=="complete" || !mediaModel.localSdp) return;
+        let params = {
+            sdp:mediaModel.localSdp,
+            cd:mediaModel.localCd,
+        };
+        EventBus.bus.emit(EventBus.localRtcDone,params);
 }

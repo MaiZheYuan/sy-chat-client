@@ -39,8 +39,7 @@
                 this.curListItem && ( this.curListItem.isActive=false );
                 this.curListItem = item;
                 item.isActive = true;
-                this._$eventBus.$emit("roomChecked",item.roomName);
-            },
+                this._$eventBus.$emit("roomChecked",item.roomName);},
         },
         mounted(){
             this.getUserRoomList();

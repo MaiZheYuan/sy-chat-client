@@ -1,7 +1,7 @@
 <template>
     <div>
-        <video id="remoteVideo" autoplay></video>
-        <video id="localVideo" autoplay></video>
+        <video class="remote-video" id="remoteVideo" autoplay></video>
+        <video class="local-video" id="localVideo" autoplay></video>
     </div>
 </template>
 <script>
@@ -17,3 +17,13 @@
         }
     }
 </script>
+<style>
+    .remote-video{
+        display: inline-block;
+        width: 50%;
+    }
+    .local-video{
+        display: none;
+        width: 50%;
+    }
+</style>
